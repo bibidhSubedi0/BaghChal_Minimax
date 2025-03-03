@@ -1,4 +1,5 @@
-﻿public class Game
+﻿using graphedBoard;
+public class Game
 {
     public void inGame()
     {
