@@ -1,6 +1,7 @@
 ﻿
 using System.Collections.Generic;
 using System.Numerics;
+using BaghChal_Minimax;
 namespace graphedBoard {
 
     class Graph
@@ -67,26 +68,28 @@ namespace graphedBoard {
                     }
                 }
             }
-
-
-            for(int i=1;i<visited.Count();i++)
-            {
-                Console.WriteLine(i + " " + visited[i]);
-            }   
+        }
+    
+        public bool HasEdge(int x, int y)
+        {
+            return adjList[x].Contains(y);
         }
     }
     
     class Board
     {
         Graph boardGraph = new Graph();
+        Dictionary<int, Players> ComponentPlacement = new Dictionary<int, Players>(26);
+        
         public Board()
         {
+            // Initilizing the edges of the graph
+            { 
             // Horizontal edges
             for (int i = 1; i <= 25; i += 5) { 
                 for (int j = i; j < i + 4; j++) { 
                     
                         boardGraph.addEdge(j, j + 1 );
-                    Console.WriteLine(i + " " + j);
                 }
             }
             // Vertical edges
@@ -103,18 +106,73 @@ namespace graphedBoard {
 
             // Diamond edges (3, 7,11,17,23,19, 15, 9)
             boardGraph.addEdge(3, 7); boardGraph.addEdge(7,11); boardGraph.addEdge(11,17); boardGraph.addEdge(17, 23); boardGraph.addEdge(23, 19); boardGraph.addEdge(19, 15); boardGraph.addEdge(15, 9); boardGraph.addEdge(3, 9);
-            boardGraph.PrintGraph();
+            //boardGraph.PrintGraph();
+            }
+
+            //// Putting the tigers in their respective position
+            //ComponentPlacement[0] = null;
+            //ComponentPlacement[1] = new Tiger();
+            //ComponentPlacement[5] = new Tiger();
+            //ComponentPlacement[21] = new Tiger();
+            //ComponentPlacement[25] = new Tiger();
 
         }
         public void boardMain()
         {
-            Console.WriteLine("Board main");
+            // Handel all the board related stuff
         }
 
         public Graph getGraph()
         {
             return boardGraph;
         }
+        public void PrintBoard()
+        {
+            Console.Clear();
+
+            for (int row = 1; row <= 5; row++)
+            {
+                // Print nodes and horizontal edges
+                for (int col = 1; col <= 5; col++)
+                {
+                    int index = (row - 1) * 5 + col;
+
+                    // Node (player's symbol or empty node '+')
+                    if (ComponentPlacement.TryGetValue(index, out Players player))
+                        Console.Write(player.iAm);
+                    else
+                        Console.Write("+");
+
+                    // Horizontal edges
+                    if (col < 5)
+                        Console.Write("---");
+                }
+                Console.WriteLine();
+
+                // Print vertical edges (between rows)
+                if (row < 5)
+                {
+                    for (int col = 1; col <= 5; col++)
+                    {
+                        int index = (row - 1) * 5 + col;
+                        int belowIndex = index + 5;
+
+                        // Vertical edge if both nodes are occupied
+                        if (ComponentPlacement.ContainsKey(index) && ComponentPlacement.ContainsKey(belowIndex))
+                            Console.Write("|   ");
+                        else
+                            Console.Write("    ");
+                    }
+                    Console.WriteLine();
+                }
+            }
+        }
+
+        public void putComponentInBoard(Players comp, int pos)
+        {
+            ComponentPlacement[pos] = comp;
+        }
+
     }
 
 
