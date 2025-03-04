@@ -10,7 +10,8 @@ public class Game
             board.boardMain();
             minmax.aiMain();
             Console.ReadLine();
-            board.getGraph().traverse(1);
+
+            board.getGraph().traverse(1,4);
         }
     }
 }
